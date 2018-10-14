@@ -45,6 +45,14 @@
   version = "v1.0"
 
 [[projects]]
+  branch = "master"
+  digest = "1:be40f095cd741773905744f16c1f7a21fd9226ccd0529f019deb7da6d667f71c"
+  name = "github.com/logrusorgru/aurora"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "a7b3b318ed4e1ae5b80602b08627267303c68572"
+
+[[projects]]
   digest = "1:c568d7727aa262c32bdf8a3f7db83614f7af0ed661474b24588de635c20024c7"
   name = "github.com/magiconair/properties"
   packages = ["."]
@@ -171,6 +179,7 @@
   analyzer-version = 1
   input-imports = [
     "github.com/go-telegram-bot-api/telegram-bot-api",
+    "github.com/logrusorgru/aurora",
     "github.com/mitchellh/go-homedir",
     "github.com/spf13/cobra",
     "github.com/spf13/viper",
