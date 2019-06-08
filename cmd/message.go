@@ -40,16 +40,16 @@ func init() {
 	rootCmd.AddCommand(messageCmd)
 	messageCmd.PersistentFlags().Int64P("chatid", "i", 0, "Chat ID to send the message to")
 	messageCmd.PersistentFlags().StringP("token", "t", "", "Telegram bot token")
-	messageCmd.MarkPersistentFlagRequired("chatid")
-	messageCmd.MarkPersistentFlagRequired("token")
-	viper.BindPFlag("chatid", messageCmd.PersistentFlags().Lookup("chatid"))
-	viper.BindPFlag("token", messageCmd.PersistentFlags().Lookup("token"))
+	_ = messageCmd.MarkPersistentFlagRequired("chatid")
+	_ = messageCmd.MarkPersistentFlagRequired("token")
+	_ = viper.BindPFlag("chatid", messageCmd.PersistentFlags().Lookup("chatid"))
+	_ = viper.BindPFlag("token", messageCmd.PersistentFlags().Lookup("token"))
 
 	documentCommand.Flags().StringP("caption", "a", "", "Document caption")
-	viper.BindPFlag("document_caption", documentCommand.Flags().Lookup("caption"))
+	_ = viper.BindPFlag("document_caption", documentCommand.Flags().Lookup("caption"))
 
 	photoCommand.Flags().StringP("caption", "a", "", "Photo caption")
-	viper.BindPFlag("photo_caption", photoCommand.Flags().Lookup("caption"))
+	_ = viper.BindPFlag("photo_caption", photoCommand.Flags().Lookup("caption"))
 
 	messageCmd.AddCommand(textCommand)
 	messageCmd.AddCommand(documentCommand)
@@ -65,7 +65,10 @@ func sendTextMessage(cmd *cobra.Command, args []string) {
 		fmt.Println(aurora.Sprintf(aurora.Red("Error while authenticating against Telegram servers: %v\n"), err))
 		os.Exit(1)
 	}
-	bot.Message(chatID, message)
+	if err := bot.Message(chatID, message); err != nil {
+		fmt.Println(aurora.Sprintf(aurora.Red("Failed sending message: %v\n"), err))
+		os.Exit(1)
+	}
 }
 
 func sendDocumentMessage(cmd *cobra.Command, args []string) {
@@ -78,7 +81,10 @@ func sendDocumentMessage(cmd *cobra.Command, args []string) {
 		fmt.Println(aurora.Sprintf(aurora.Red("Error while authenticating against Telegram servers: %v\n"), err))
 		os.Exit(1)
 	}
-	bot.Document(chatID, fileToSendPath, caption)
+	if err := bot.Document(chatID, fileToSendPath, caption); err != nil {
+		fmt.Println(aurora.Sprintf(aurora.Red("Failed sending document: %v\n"), err))
+		os.Exit(1)
+	}
 }
 
 func sendPhotoMessage(cmd *cobra.Command, args []string) {
@@ -91,5 +97,8 @@ func sendPhotoMessage(cmd *cobra.Command, args []string) {
 		fmt.Println(aurora.Sprintf(aurora.Red("Error while authenticating against Telegram servers: %v\n"), err))
 		os.Exit(1)
 	}
-	bot.Photo(chatID, fileToSendPath, caption)
+	if err := bot.Photo(chatID, fileToSendPath, caption); err != nil {
+		fmt.Println(aurora.Sprintf(aurora.Red("Failed sending photo: %v\n"), err))
+		os.Exit(1)
+	}
 }
