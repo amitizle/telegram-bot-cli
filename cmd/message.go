@@ -44,6 +44,13 @@ func init() {
 	messageCmd.MarkPersistentFlagRequired("token")
 	viper.BindPFlag("chatid", messageCmd.PersistentFlags().Lookup("chatid"))
 	viper.BindPFlag("token", messageCmd.PersistentFlags().Lookup("token"))
+
+	documentCommand.Flags().StringP("caption", "a", "", "Document caption")
+	viper.BindPFlag("document_caption", documentCommand.Flags().Lookup("caption"))
+
+	photoCommand.Flags().StringP("caption", "a", "", "Photo caption")
+	viper.BindPFlag("photo_caption", photoCommand.Flags().Lookup("caption"))
+
 	messageCmd.AddCommand(textCommand)
 	messageCmd.AddCommand(documentCommand)
 	messageCmd.AddCommand(photoCommand)
@@ -64,23 +71,25 @@ func sendTextMessage(cmd *cobra.Command, args []string) {
 func sendDocumentMessage(cmd *cobra.Command, args []string) {
 	token := viper.GetString("token")
 	chatID := viper.GetInt64("chatid")
+	caption := viper.GetString("document_caption")
 	fileToSendPath := args[0] // cobra.ExactArgs(1) is used in the command spec
 	bot, err := bot.New(token)
 	if err != nil {
 		fmt.Println(aurora.Sprintf(aurora.Red("Error while authenticating against Telegram servers: %v\n"), err))
 		os.Exit(1)
 	}
-	bot.Document(chatID, fileToSendPath)
+	bot.Document(chatID, fileToSendPath, caption)
 }
 
 func sendPhotoMessage(cmd *cobra.Command, args []string) {
 	token := viper.GetString("token")
 	chatID := viper.GetInt64("chatid")
+	caption := viper.GetString("photo_caption")
 	fileToSendPath := args[0] // cobra.ExactArgs(1) is used in the command spec
 	bot, err := bot.New(token)
 	if err != nil {
 		fmt.Println(aurora.Sprintf(aurora.Red("Error while authenticating against Telegram servers: %v\n"), err))
 		os.Exit(1)
 	}
-	bot.Photo(chatID, fileToSendPath)
+	bot.Photo(chatID, fileToSendPath, caption)
 }

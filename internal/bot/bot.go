@@ -27,15 +27,20 @@ func (bot *Bot) Message(chatID int64, message string) error {
 	return err
 }
 
-func (bot *Bot) Document(chatID int64, filePath string) error {
+func (bot *Bot) Document(chatID int64, filePath string, caption string) error {
 	documentConfig := tgbotapi.NewDocumentUpload(chatID, filePath)
+	if caption != "" {
+		documentConfig.Caption = caption
+	}
 	_, err := bot.bot.Send(documentConfig)
 	return err
 }
 
-func (bot *Bot) Photo(chatID int64, filePath string) error {
+func (bot *Bot) Photo(chatID int64, filePath string, caption string) error {
 	photoConfig := tgbotapi.NewPhotoUpload(chatID, filePath)
-	photoConfig.Caption = "SUN!"
+	if caption != "" {
+		photoConfig.Caption = caption
+	}
 	_, err := bot.bot.Send(photoConfig)
 	return err
 }
